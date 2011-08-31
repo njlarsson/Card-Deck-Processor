@@ -1,0 +1,95 @@
+\documentclass[nols,a4paper,twoside]{tufte-handout}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+%%\usepackage{graphics}
+\usepackage[USenglish]{babel}
+
+\frenchspacing
+
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+
+\title{Algorithms in Natural Language}
+\author{Jesper Larsson, IT University of Copenhagen}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  This text concerns algorithms for reordering decks of cards,
+  expressed in natural language. It is used for exercise on the course
+  \emph{IT Foundations}, fall 2011, and is part of the syllabus.
+\end{abstract}
+
+It is a common misconception that knowledge of programming is the same
+thing as knowledge of programming language syntax. Before you can
+write the code that solves a task, you must have an idea about the
+process that the code should discribe. This process desciption, or
+\emph{algorithm}, is often formulated using semi-formal
+\emph{pseudocode}, but it is also possible to express algorithms in
+more or less plain English.
+
+This exercise is about designing algorithms in a specific context --~a
+deck of numbered cards~-- and expressing them in English.
+
+To make this tangible, you should work with an actual deck of
+cards. We will use approximately 20~cards, each with a number between
+1 and 20 (but any deck of numbered cards will do). Keep the cards on
+the table in front of you with the face side up (the one with the
+number). You rearrange the cards, moving them around among a
+few decks, making all decisions based on what cards you see. When
+cards are on top of each other, you can only make decisions based on
+the value of the card on top.
+
+The input to each algorithm is one or more named decks of cards, the
+contents of which may be restricted in some way in the
+specification. (For instance, it may be specified that a particular
+deck only contains one card.) You can create more decks as part of the
+algorithm, and move cards among both the input decks and those you
+created yourself. The decks you create are initially empty, so what
+you create, and name, is really a place for a deck on the table, not
+the actual stack of cards. One or more of the decks is specified to
+contain the output.
+
+We use natural language for the algorithms, but that doesn't
+mean that we can use any operation that natural language can
+express. There is a strictly defined \emph{interface}: a set of
+available operations, as follows:
+%%
+\begin{itemize}
+\item Creating a new named deck, e.g., ``Create new deck \emph{x}.''
+\item Move the top card of a deck on top of another deck, e.g., ``Move
+  top card from deck \emph{x} to deck \emph{y}.''
+\item Move all cards of a deck on top of another deck without
+  rearranging them, e.g., ``Move all cards from deck \emph{x} to deck
+  \emph{y}.''
+\item Jump to another position of the algorithm. We mark positions
+  that we can jump to with \emph{labels}. Jumping backwards in the
+  algorithm is how we can get \emph{repetition}.
+\item Jump conditionally, based on whether the top card of one deck is
+  either smaller, greater, or equal to the top card of another. E.g.,
+  ``Jump to \emph{startpoint} if top card of deck \emph{x} is greater
+  than top card on deck \emph{y}.''
+\item Jump conditionally, based on whether a deck is empty or not. E.g.,
+  ``Jump to \emph{startpoint} if deck \emph{x} is empty.''
+\item Make a deck \emph{output} of the algorithm, e.g., ``output deck
+  $x$''.
+\item Stop. The algorithm is finished. Reaching the end of the
+  algorithm has the same effect.
+\end{itemize}
+
+\begin{example}
+  Split a deck of cards into two parts whose sizes are as
+  \begin{description}
+  \item[Input:] One deck of cards named ``in''
+  \item[Output:] Two decks of cards ``out1'' and ``out2'', whose number of cards differ by at most one.
+  \end{description}
+\end{example}
+
+
+\end{document}

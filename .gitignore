@@ -1,5 +1,16 @@
 # Emacs backups
 *~
 
+# LaTeX outputs
+*.aux
+*.log
+*.dvi
+*.pdf
+*.synctex.gz
+*.bbl
+*.blg
+vc.tex
+
 # Object code
 *.class
+
