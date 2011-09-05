@@ -4,7 +4,7 @@
    new trash
 check:
    jump if empty in, end
-   jump if greater in, limit, skip
+   jump if less in, limit, skip
    movetop in, out
    jump check
 skip:
@@ -12,3 +12,4 @@ skip:
    jump check
 end:
    output out
+stop

@@ -22,7 +22,7 @@ object DeckLineParser {
   private val OneParam =     """(\w+)""".r
   private val TwoParam =     """(\w+)\s*,\s*(\w+)""".r
   private val DeckFile =     """(\w+)\s*,\s*(\S.*)""".r
-  private val IfComp =       """if\s+(\w)\s+(\w+)\s*,\s*(\w+)\s*,\s*(\w+)""".r
+  private val IfComp =       """if\s+(\w+)\s+(\w+)\s*,\s*(\w+)\s*,\s*(\w+)""".r
   private val IfEmpty =      """if\s+empty\s+(\w+)\s*,\s*(\w+)""".r
   private val IfNotEmpty =   """if\s+not\s+empty\s+(\w+)\s*,\s*(\w+)""".r
 

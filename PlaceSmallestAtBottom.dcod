@@ -1,0 +1,21 @@
+   read in, b.deck
+   new min
+   new temp
+   new out
+check:
+   jump if empty in, end
+   jump if empty min, move
+   jump if equal in, min, move
+   jump if less in, min, replace
+   movetop in, temp
+   jump check
+replace:
+   moveall min, temp
+move:
+   movetop in, min
+   jump check
+end:
+   moveall min, out
+   moveall temp, out
+   output out
+   stop

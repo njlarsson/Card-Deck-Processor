@@ -93,7 +93,7 @@ object DeckInter extends App {
     }
 
     while (!stop) {
-      if (lineNo > lines.length) throw new DeckInterException("End of file")
+      if (lineNo == lines.length) throw new DeckInterException("Unexpected end of file")
       val line = lines(lineNo).trim
       lineNo = lineNo + 1
       if (trace) println("Executing " + lineNo + ": " + line);
