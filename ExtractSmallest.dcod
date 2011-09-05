@@ -1,0 +1,17 @@
+   read in, a.deck
+   new min
+   new trash
+check:
+   jump if empty in, end
+   jump if empty min, move
+   jump if less in, min, replace
+   movetop in, trash
+   jump check
+replace:
+   movetop min, trash
+move:
+   movetop in, min
+   jump check
+end:
+   output min
+   stop
