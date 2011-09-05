@@ -1,0 +1,14 @@
+   read in, a.deck
+   read limit
+   new out
+   new trash
+check:
+   jump if empty in, end
+   jump if greater in, limit, skip
+   movetop in, out
+   jump check
+skip:
+   movetop in, trash
+   jump check
+end:
+   output out

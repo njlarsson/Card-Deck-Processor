@@ -159,7 +159,7 @@ solution, but short and simple are good properties to strive for.
       Create new deck \emph{trash}.\\
       \lbl{check}\\
       Jump to \emph{end} if \emph{in} is empty.\\
-      Jump to \emph{skip} if the top card of \emph{in} is greater than
+      Jump to \emph{skip} if the top card of \emph{in} is smaller than
       the top card of \emph{limit}.\\
       Move the top card from \emph{in} to \emph{out}.\\
       Jump to \emph{check}.\\
@@ -198,7 +198,7 @@ solution, but short and simple are good properties to strive for.
       Move top card of \emph{in} to \emph{min}.\\
       Jump to \emph{check}.\\
       \lbl{end}\\
-      Output \emph{min}.
+      Output \emph{min}.\\
       Stop.
     \end{tabular}
   \end{description}
@@ -242,7 +242,7 @@ in an empty output, which would seem like a reasonable response.
       \lbl{end}\\
       Move all cards from \emph{min} to \emph{out}.\\
       Move all cards from \emph{temp} to \emph{out}.\\
-      Output \emph{out}.
+      Output \emph{out}.\\
       Stop.
     \end{tabular}
   \end{description}
