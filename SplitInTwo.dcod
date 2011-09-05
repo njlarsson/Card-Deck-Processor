@@ -1,0 +1,13 @@
+   read in
+   new out1
+   new out2
+check:
+   jump if empty in, end
+   movetop in, out1
+   jump if empty in, end
+   movetop in, out2
+   jump check
+end:
+   output out1
+   output out2
+   stop

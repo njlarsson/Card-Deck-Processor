@@ -17,7 +17,7 @@ class Deck(name: String) {
     return b.toString
   }
 
-  private def parse(s: String) = {
+  private def parse(s: String) {
     val a = s.split(",")
     var i = 0
     while (i < a.length) {
@@ -30,9 +30,9 @@ class Deck(name: String) {
 
   def readFile(fileName: String) = parse(scala.io.Source.fromFile(fileName).mkString)
 
-  def moveTopTo(other: Deck) = { other.cards.push(cards.pop()) }
+  def moveTopTo(other: Deck) { other.cards.push(cards.pop) }
 
-  def moveAllTo(other: Deck) = {
+  def moveAllTo(other: Deck) {
     other.cards.pushAll(cards)
     cards.clear
   }
