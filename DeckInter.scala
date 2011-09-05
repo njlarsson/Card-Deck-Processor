@@ -104,6 +104,10 @@ object DeckInter extends App {
       println(e);
       sys.exit(65)                      // EX_DATAERR
     }
+    case e: java.io.IOException => {
+      println(e);
+      sys.exit(66)                      // EX_NOINPUT
+    }
   }
 
   private def makeDeck(deckName: String): Deck = {

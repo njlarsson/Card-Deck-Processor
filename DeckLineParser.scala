@@ -21,6 +21,7 @@ object DeckLineParser {
   private val Instr =        """(\w+)\s+(.*)""".r
   private val OneParam =     """(\w+)""".r
   private val TwoParam =     """(\w+)\s*,\s*(\w+)""".r
+  private val DeckFile =     """(\w+)\s*,\s*(\S.*)""".r
   private val IfComp =       """if\s+(\w)\s+(\w+)\s*,\s*(\w+)\s*,\s*(\w+)""".r
   private val IfEmpty =      """if\s+empty\s+(\w+)\s*,\s*(\w+)""".r
   private val IfNotEmpty =   """if\s+not\s+empty\s+(\w+)\s*,\s*(\w+)""".r
@@ -63,8 +64,8 @@ object DeckLineParser {
           }
           case "read"         => param match {
             case OneParam(deckName)           => todo.read(deckName)
-            case TwoParam(deckName, fileName) => todo.read(deckName, fileName)
-            case _                            => todo.parseException("Illegal readdeck parameters: " + param)
+            case DeckFile(deckName, fileName) => todo.read(deckName, fileName)
+            case _                            => todo.parseException("Illegal read parameters: " + param)
           }
           case _              => todo.parseException("Illegal instruction: " + instr)
         }
