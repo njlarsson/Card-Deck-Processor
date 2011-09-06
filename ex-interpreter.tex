@@ -1,0 +1,365 @@
+\documentclass[a4paper,twoside]{tufte-handout}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+%% \usepackage{graphics}
+\usepackage[USenglish]{babel}
+
+\frenchspacing
+
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+
+\renewcommand{\theexercise}{\Alph{exercise}}
+
+\newcommand\lbl[1]{\hspace{-1em}\emph{#1:}}
+
+%%\lstset{basicstyle=\ttfamily,backgroundcolor=\color{white},frame=single,rulecolor=\color{gray!20},framesep=10pt,linewidth=12cm}
+\lstset{basicstyle=\normalfont\ttfamily\small,frame=single,rulecolor=\color{gray!40}}
+
+\title{Programming Deck Code Interpreter}
+\author{Jesper Larsson, IT University of Copenhagen}
+\date{2011-09-06}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  This text contains exercise material and a mandatory assignment for
+  the course \emph{IT Foundations}, fall 2011, and is part of the
+  syllabus.
+\end{abstract}
+
+%% ===============================================
+\section{Introduction}\label{sec-intro}
+
+\emph{Deck code} is a programming language based on the deck-of-cards
+model from the previous exercise. Granted, a very small and
+specialized language, but nevertheless a programming language, which
+lets you try some of the basic techniques of writing a real program.
+
+Using deck code differs from the previous english-language algorithm
+descriptions in two ways. First, the syntax is more strictly defined,
+and abbreviated, which makes it less natural to read, but saves a
+lot of typing. Second, rather than ``running'' the algorithms manually
+using paper cards, there is an \emph{interpreter} that can run the
+code for you, so that you can test that it actually works. A strict
+syntax is necessary for an interpreter to work.
+
+The available operations are exactly the same as in the previous
+exercise, so whatever algorithm you came up with then, you can now
+test by writing them in deck code.
+
+%% ===============================================
+\section{Syntax}\label{sec-syntax}
+
+This section defines the operations of the deck code language. You
+will use it as a reference when trying deck code on your own. It may
+be easier to understand if you take a look at a few of the examples in
+the next section before getting into all the details.
+
+An operation consists of an \emph{instruction}, followed by
+\emph{arguments}. The instruction is one word, or several
+space-separated words. The arguments are comma-separated. Deck names
+and labels are sequences of letters and digits, without any spaces.
+
+Everything is case sensitive. For instance, you can't write
+\lstinline!Jump! instead of \lstinline!jump!, and there may be two
+different labels called \lstinline!end! and \lstinline!End!.
+
+%% -----------------------------------------------------------
+\subsection{Read}\label{sec-input}
+
+Defining input wasn't part of the informal-language algorithms, but
+they have to be specified to the interpreter, and therefore need to be
+included in the deck code.
+
+The \emph{read} operation gets input. It has one deck name argument,
+and one optional file name argument. For example, you can simply write:
+%%
+\begin{lstlisting}
+   read in
+\end{lstlisting}
+
+This defines a deck called \emph{in}, which must not have been
+previously defined, and stops to read its contents. When you get to
+this line in a running deck code program you see:
+%%
+\begin{lstlisting}
+Enter cards for in: 
+\end{lstlisting}
+%%
+and you are expected to enter the contents of the deck bottom up, as a
+comma-separated list of integer numbers. For instance, it can look
+like this:
+%%
+\begin{lstlisting}
+Enter cards for in: 3, 12, 7, 1
+\end{lstlisting}
+%%
+After typing the number list, you hit return, and the program
+continues, the deck \emph{in} now containing four cards, 3~on the
+bottom and 1~on the top.
+
+It gets tedious to have to type input every time, especially if you
+are entering the same cards over and over for testing
+purposes. Therefore, you may choose to read from a file instead, by
+adding a comma and a filename, for example like this:
+%%
+\begin{lstlisting}
+   read in, a.deck
+\end{lstlisting}
+%%
+This assumes that there is a plain text file \lstinline!a.deck! in the
+current working directory, containing a comma-separated list of integers.
+
+%% -----------------------------------------------------------
+\subsection{New}\label{sec-new}
+
+You create a new, empty, deck with the \emph{new} operator, which has
+a single deck name argument. Like this, for instance:
+%%
+\begin{lstlisting}
+   new temp
+\end{lstlisting}
+
+%% -----------------------------------------------------------
+\subsection{Movement}\label{sec-move}
+
+You move cards between decks with either \emph{movetop}, which moves
+the top card of one deck to another, or \emph{moveall}, which moves
+all the cards as one pack, without rearranging them. Both
+commands take two deck name arguments, the one to move from followed
+by the one to move to. So, for instance:
+%%
+\begin{lstlisting}
+   movetop in, temp
+   moveall temp, out
+\end{lstlisting}
+%%
+moves the top card from \emph{in} to \emph{temp}, and then puts all
+the cards from \emph{temp} on top of out.
+
+%% -----------------------------------------------------------
+\subsection{Jumping}\label{sec-}
+
+There are a number of forms of jump, each of which has a \emph{label}
+as the last argument. The label must be present somewhere in the code:
+as a word followed by a colon, on a line of its own. The variants of
+jump are:
+%%
+\begin{itemize}
+\item Unconditional, ``jump~\emph{label}''.
+\item Conditioned on comparison of two cards,
+%%
+``jump if \emph{condition}, \emph{left}, \emph{right}, \emph{label}'',
+%%
+where \emph{condition} is one of ``less'', ``greater'', or
+``equal''. The meaning is: jump to \emph{label} if and only if the top
+card of the deck \emph{left} is ``\emph{condition-to/than}'' the top card
+of deck \emph{right}. For instance,
+%%
+\begin{lstlisting}
+  jump if less in, temp, start
+\end{lstlisting}
+%%
+jumps to start if th top card of \emph{in} is less than the top card
+of \emph{temp}.
+
+\item Conditioned on whether a deck is empty, either ``jump if
+  empty \emph{deck}, \emph{label}'' or ``jump if not empty \emph{deck},
+  \emph{label}.
+\end{itemize}
+
+  
+Here is a snippet of code with some examples of labels and jumps:
+%%
+\begin{lstlisting}
+start:
+   jump if equal in1, in2, end
+   jump if not empty temp, start
+end:
+   jump start
+\end{lstlisting}
+
+Writing like this, with labels flushed left and the rest of the code
+indented with a few spaces, is just to make the code easier to
+read. The deck code interpreter does not care about extra spaces, so
+they have no effect when you run the program.
+
+%% -----------------------------------------------------------
+\subsection{Output}\label{sec-output}
+
+You output a deck simply with ``output \emph{deck}''. This prints the
+name of the deck, and then the cards, from bottom to top, for
+instance:
+%%
+\begin{lstlisting}
+   output out1
+   output out2
+\end{lstlisting}
+
+%% -----------------------------------------------------------
+\subsection{stop}\label{sec-stop}
+
+Stop is the only operation without any arguments. It's just the one word:
+%%
+\begin{lstlisting}
+   stop
+\end{lstlisting}
+
+\section{Examples}\label{sec-examp}
+
+The examples in this section are implementations of corresponding
+algorithms in the previous exercise text (\emph{Algorithms in Natural
+  Language}).
+
+\begin{example}
+  Split a deck of cards into two parts whose sizes are as equal as possible.
+  \begin{description}
+  \item[Input:] One deck of cards named \emph{in}
+  \item[Output:] Two decks of cards \emph{out1} and \emph{out2},
+    whose numbers of cards differ by at most one.
+  \end{description}
+\begin{lstlisting}
+   read in
+   new out1
+   new out2
+check:
+   jump if empty in, end
+   movetop in, out1
+   jump if empty in, end
+   movetop in, out2
+   jump check
+end:
+   output out1
+   output out2
+   stop
+\end{lstlisting}
+\end{example}
+
+\begin{example}
+  Extract all cards greater than or equal to a given value.
+  \begin{description}
+  \item[Input:] One deck named \emph{limit} containing a single card,
+    and one deck named \emph{in} containing any number of cards.
+  \item[Output:] One deck named \emph{out}, containing all the cards
+    from \emph{in} whose value is no less than the card in the
+    \emph{limit} deck.
+ \end{description}
+\begin{lstlisting}
+   read in, extractfrom.deck
+   read limit
+   new out
+   new trash
+check:
+   jump if empty in, end
+   jump if less in, limit, skip
+   movetop in, out
+   jump check
+skip:
+   movetop in, trash
+   jump check
+end:
+   output out
+stop
+\end{lstlisting}
+\end{example}
+
+\begin{example}\label{extractsmallest}
+  Extract the smallest card from a deck.
+  \begin{description}
+  \item[Input:] A deck \emph{in}.
+  \item[Output:] A deck \emph{min}, containing containing only one
+    card from \emph{in}, which has the smallest value of any of the
+    cards in \emph{in}.
+ \end{description}
+\begin{lstlisting}
+   read in, extractfrom.deck
+   new min
+   new trash
+check:
+   jump if empty in, end
+   jump if empty min, move
+   jump if less in, min, replace
+   movetop in, trash
+   jump check
+replace:
+   movetop min, trash
+move:
+   movetop in, min
+   jump check
+end:
+   output min
+   stop
+\end{lstlisting}
+\end{example}
+
+\begin{example}\label{smallbottom}
+  Place smallest cards at the bottom.
+  \begin{description}
+  \item[Input:] A deck \emph{in}.
+  \item[Output:] A deck \emph{out}, that contains all the cards from
+    in, but with the cards with the smallest value at the
+    bottom. (Note that there can be more than one card with this
+    value.) The other cards can be in any order.
+ \end{description}
+\begin{lstlisting}
+   read in, b.deck
+   new min
+   new temp
+   new out
+check:
+   jump if empty in, end
+   jump if empty min, move
+   jump if equal in, min, move
+   jump if less in, min, replace
+   movetop in, temp
+   jump check
+replace:
+   moveall min, temp
+move:
+   movetop in, min
+   jump check
+end:
+   moveall min, out
+   moveall temp, out
+   output out
+   stop
+\end{lstlisting}
+\end{example}
+
+%% ===============================================
+\section{Editing and Running}\label{sec-editrun}
+
+You create deck code files in any plain text editor (TextEdit,
+NotePad, Emacs, \dots). The deck code interpreter is a program written
+in the programming language Scala. To run it, you need:
+%%
+\begin{itemize}
+\item The file \emph{decklib1.jar}, which contains the deck code
+  interpreter.
+\item The Scala language system.
+\item The Java system, which Scala runs on top of.
+\end{itemize}
+
+Once you have Scala (and Java) installed, the file \emph{decklib1.jar}
+on your CLASSPATH, and a deck code file that you saved under, say, the
+name \emph{myexample.dcod}, you can run using the following command:
+%%
+\begin{lstlisting}
+scala DeckInter myexample.dcod
+\end{lstlisting}
+
+At some stage during testing, you may find it useful to know which
+lines, in which order, the interpreter executes. The \emph{-trace}
+option prints each line as it is executed:
+%%
+\begin{lstlisting}
+scala DeckInter -trace myexample.dcod
+\end{lstlisting}
+
+\end{document}
