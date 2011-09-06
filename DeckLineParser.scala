@@ -70,6 +70,8 @@ object DeckLineParser {
           case _              => todo.parseException("Illegal instruction: " + instr)
         }
       }
+      case ""           => // empty line, ignore
+      case _            => todo.parseException("Unrecognized syntax: " + line)
     }
   }
 }
