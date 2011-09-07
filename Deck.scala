@@ -11,7 +11,7 @@ class Deck(name: String) {
     while (i > 0) {
       i = i - 1
       b ++= cards(i).toString
-      if (i > 0) b ++= ", "
+      if (i > 0) { b ++= ", " }
     }
     b += ')'
     return b.toString
@@ -37,9 +37,7 @@ class Deck(name: String) {
     cards.clear
   }
 
-  def compareTop(other: Deck): Int = {
-    return cards.top - other.cards.top
-  }
+  def compareTop(other: Deck): Int = cards.top - other.cards.top;
 
   def isEmpty: Boolean = cards.isEmpty
 }

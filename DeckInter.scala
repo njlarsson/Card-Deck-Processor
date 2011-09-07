@@ -11,7 +11,7 @@ object DeckInter extends App {
   private val decks = new HashMap[String, Deck] {
     override def default(name: String) = throw new DeckInterException("No such deck: " + name)
     override def put(name: String, deck: Deck): Option[Deck] = {
-      if (super.put(name, deck) != None) throw new DeckInterException("Deck redefined: " + name)
+      if (super.put(name, deck) != None) { throw new DeckInterException("Deck redefined: " + name) }
       return None
     }
   }
@@ -19,7 +19,7 @@ object DeckInter extends App {
   private val labels = new HashMap[String, Int] {
     override def default(name: String) = throw new DeckInterException("No such label: " + name)
     override def put(name: String, lineNo: Int): Option[Int] = {
-      if (super.put(name, lineNo) != None) throw new DeckInterException("Label redefined: " + name)
+      if (super.put(name, lineNo) != None) { throw new DeckInterException("Label redefined: " + name) }
       return None
     }
   }
@@ -78,14 +78,24 @@ object DeckInter extends App {
       def stop() { DeckInter.stop = true }
       def label(label: String) { }
       def makeDeck(deckName: String) { DeckInter.makeDeck(deckName) }
-      def moveTop(left: String, right: String) = decks(left).moveTopTo(decks(right))
-      def moveAll(left: String, right: String) = decks(left).moveAllTo(decks(right))
+      def moveTop(left: String, right: String) { decks(left).moveTopTo(decks(right)) }
+      def moveAll(left: String, right: String) { decks(left).moveAllTo(decks(right)) }
       def jump(label: String) { lineNo = labels(label) }
-      def jumpEmpty(deckName: String, label: String) = if (decks(deckName).isEmpty) lineNo = labels(label)
-      def jumpNotEmpty(deckName: String, label: String) = if (!decks(deckName).isEmpty) lineNo = labels(label)
-      def jumpLess(left: String, right: String, label: String) = if (decks(left).compareTop(decks(right)) < 0) lineNo = labels(label)
-      def jumpGreater(left: String, right: String, label: String) = if (decks(left).compareTop(decks(right)) > 0) lineNo = labels(label)
-      def jumpEqual(left: String, right: String, label: String) = if (decks(left).compareTop(decks(right)) == 0) lineNo = labels(label)
+      def jumpEmpty(deckName: String, label: String) { 
+        if (decks(deckName).isEmpty) { lineNo = labels(label) } 
+      }
+      def jumpNotEmpty(deckName: String, label: String) {
+        if (!decks(deckName).isEmpty) { lineNo = labels(label) }
+      }
+      def jumpLess(left: String, right: String, label: String) {
+        if (decks(left).compareTop(decks(right)) < 0) { lineNo = labels(label) }
+      }
+      def jumpGreater(left: String, right: String, label: String) {
+        if (decks(left).compareTop(decks(right)) > 0) { lineNo = labels(label) }
+      }
+      def jumpEqual(left: String, right: String, label: String) {
+        if (decks(left).compareTop(decks(right)) == 0) { lineNo = labels(label) }
+      }
       def output(deckName: String) = println(decks(deckName))
       def read(deckName: String) = DeckInter.makeDeck(deckName).read()
       def read(deckName: String, fileName: String) = DeckInter.makeDeck(deckName).readFile(fileName)
@@ -93,10 +103,10 @@ object DeckInter extends App {
     }
 
     while (!stop) {
-      if (lineNo == lines.length) throw new DeckInterException("Unexpected end of file")
+      if (lineNo == lines.length) { throw new DeckInterException("Unexpected end of file") }
       val line = lines(lineNo).trim
       lineNo = lineNo + 1
-      if (trace) println("Executing " + lineNo + ": " + line);
+      if (trace) { println("Executing " + lineNo + ": " + line) }
       DeckLineParser.parseLine(line, executor)
     }
   } catch {
