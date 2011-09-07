@@ -1,6 +1,6 @@
 object DeckLineParser {
   trait LineProc {
-    def stop
+    def stop()
     def label(label: String)
     def makeDeck(deckName: String)
     def moveTop(left: String, right: String)
@@ -28,7 +28,7 @@ object DeckLineParser {
 
   def parseLine(line: String, todo: LineProc) {
     line match {
-      case "stop"       => todo.stop
+      case "stop"       => todo.stop()
       case Label(label) => todo.label(label)
       case Instr(instr, param) => {
         instr match {

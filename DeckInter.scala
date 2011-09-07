@@ -2,7 +2,7 @@ import scala.collection.mutable.HashMap
 
 object DeckInter extends App {
   class DeckInterException(text: String) extends Exception {
-    override def toString = lineNo + ": " + text
+    override def toString: String = lineNo + ": " + text
   }
 
   private var lineNo = 0
@@ -51,7 +51,7 @@ object DeckInter extends App {
 
     // Scan for labels.
     val labelParser = new DeckLineParser.LineProc {
-      def stop { }
+      def stop() { }
       def label(label: String) { labels(label) = lineNo }
       def makeDeck(deckName: String) { }
       def moveTop(left: String, right: String) { }
@@ -75,7 +75,7 @@ object DeckInter extends App {
     lineNo = 0                            // reset for execution
 
     val executor = new DeckLineParser.LineProc {
-      def stop { DeckInter.stop = true }
+      def stop() { DeckInter.stop = true }
       def label(label: String) { }
       def makeDeck(deckName: String) { DeckInter.makeDeck(deckName) }
       def moveTop(left: String, right: String) = decks(left).moveTopTo(decks(right))
@@ -87,7 +87,7 @@ object DeckInter extends App {
       def jumpGreater(left: String, right: String, label: String) = if (decks(left).compareTop(decks(right)) > 0) lineNo = labels(label)
       def jumpEqual(left: String, right: String, label: String) = if (decks(left).compareTop(decks(right)) == 0) lineNo = labels(label)
       def output(deckName: String) = println(decks(deckName))
-      def read(deckName: String) = DeckInter.makeDeck(deckName).read
+      def read(deckName: String) = DeckInter.makeDeck(deckName).read()
       def read(deckName: String, fileName: String) = DeckInter.makeDeck(deckName).readFile(fileName)
       def parseException(message: String) = throw new DeckInterException(message)
     }

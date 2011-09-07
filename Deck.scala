@@ -26,11 +26,11 @@ class Deck(name: String) {
     }
   }
   
-  def read = parse(readLine("Enter cards for " + name + ": "))
+  def read() { parse(readLine("Enter cards for " + name + ": ")) }
 
-  def readFile(fileName: String) = parse(scala.io.Source.fromFile(fileName).mkString)
+  def readFile(fileName: String) { parse(scala.io.Source.fromFile(fileName).mkString) }
 
-  def moveTopTo(other: Deck) { other.cards.push(cards.pop) }
+  def moveTopTo(other: Deck) { other.cards.push(cards.pop()) }
 
   def moveAllTo(other: Deck) {
     other.cards.pushAll(cards)
@@ -41,5 +41,5 @@ class Deck(name: String) {
     return cards.top - other.cards.top
   }
 
-  def isEmpty = cards.isEmpty
+  def isEmpty: Boolean = cards.isEmpty
 }
