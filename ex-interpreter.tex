@@ -12,6 +12,7 @@
 
 \newtheorem{exercise}{Exercise}
 \newtheorem{example}{Example}
+\newtheorem{assignment}{Assignment}
 
 \renewcommand{\theexercise}{\Alph{exercise}}
 
@@ -20,9 +21,9 @@
 %%\lstset{basicstyle=\ttfamily,backgroundcolor=\color{white},frame=single,rulecolor=\color{gray!20},framesep=10pt,linewidth=12cm}
 \lstset{basicstyle=\normalfont\ttfamily\small,frame=single,rulecolor=\color{gray!40}}
 
-\title{Programming Deck Code Interpreter}
+\title{Deck Code}
 \author{Jesper Larsson, IT University of Copenhagen}
-\date{2011-09-06}
+\date{2011-09-08}
 
 \begin{document}
 \maketitle
@@ -114,7 +115,9 @@ adding a comma and a filename, for example like this:
 \end{lstlisting}
 %%
 This assumes that there is a plain text file \lstinline!a.deck! in the
-current working directory, containing a comma-separated list of integers.
+current working directory, containing a comma-separated list of
+integers. (You can create a file like this using a text editor, just
+like when you write deck code.)
 
 %% -----------------------------------------------------------
 \subsection{New}\label{sec-new}
@@ -147,13 +150,13 @@ the cards from \emph{temp} on top of out.
 \subsection{Jumping}\label{sec-}
 
 There are a number of forms of jump, each of which has a \emph{label}
-as the last argument. The label must be present somewhere in the code:
+as the last argument. The label must be present somewhere in the code,
 as a word followed by a colon, on a line of its own. The variants of
 jump are:
 %%
 \begin{itemize}
 \item Unconditional, ``jump~\emph{label}''.
-\item Conditioned on comparison of two cards,
+\item Conditioned on a comparison between two cards,
 %%
 ``jump if \emph{condition}, \emph{left}, \emph{right}, \emph{label}'',
 %%
@@ -166,7 +169,7 @@ of deck \emph{right}. For instance,
   jump if less in, temp, start
 \end{lstlisting}
 %%
-jumps to start if th top card of \emph{in} is less than the top card
+jumps to \emph{start} if the top card of \emph{in} is less than the top card
 of \emph{temp}.
 
 \item Conditioned on whether a deck is empty, either ``jump if
@@ -241,7 +244,11 @@ end:
 \end{lstlisting}
 \end{example}
 
-\begin{example}
+Examples\,\ref{extractge} and~\ref{extractsmallest} both read \emph{in} from a file called
+\emph{extractfrom.deck}, so you have to make a file like that in the
+current directory (or change the programs).
+
+\begin{example}\label{extractge}
   Extract all cards greater than or equal to a given value.
   \begin{description}
   \item[Input:] One deck named \emph{limit} containing a single card,
@@ -333,33 +340,97 @@ end:
 \end{example}
 
 %% ===============================================
-\section{Editing and Running}\label{sec-editrun}
+\section{Exercises}\label{sec-editrun}
 
-You create deck code files in any plain text editor (TextEdit,
-NotePad, Emacs, \dots). The deck code interpreter is a program written
-in the programming language Scala. To run it, you need:
-%%
-\begin{itemize}
-\item The file \emph{decklib1.jar}, which contains the deck code
-  interpreter.
-\item The Scala language system.
-\item The Java system, which Scala runs on top of.
-\end{itemize}
+The following exercises are the same as the ones for the natural
+language exercise. But now, you can write your algorithms in deck
+code, and actually verify that they work.
 
-Once you have Scala (and Java) installed, the file \emph{decklib1.jar}
-on your CLASSPATH, and a deck code file that you saved under, say, the
-name \emph{myexample.dcod}, you can run using the following command:
-%%
-\begin{lstlisting}
-scala DeckInter myexample.dcod
-\end{lstlisting}
+\begin{exercise}
+  Split a deck of cards into three parts whose sizes are as equal as possible.
+  \begin{description}
+  \item[Input:] One deck of cards named \emph{in}
+  \item[Output:] Three decks of cards \emph{out1}, \emph{out2}, and
+    \emph{out3}, whose numbers of cards differ by at most one.
+ \end{description}
+\end{exercise}
 
-At some stage during testing, you may find it useful to know which
-lines, in which order, the interpreter executes. The \emph{-trace}
-option prints each line as it is executed:
+\begin{exercise}
+  Split a deck of cards into two decks. One with cards smaller than a
+  given value, and one with cards greater than or equal to that value.
+  \begin{description}
+  \item[Input:] One deck \emph{limit} containing a single card, and one
+    deck \emph{in} containing any number of cards.
+  \item[Output:] One deck named \emph{smaller}, containing all the
+    cards from \emph{in} whose values are less than the card in the
+    \emph{limit} deck, and one deck named \emph{greater} that contains
+    the other cards.
+  \end{description}
+\end{exercise}
+
+\begin{exercise}
+  Example\,\ref{smallbottom} above uses two temporary decks \emph{min}
+  and \emph{temp}, which are not part of either input or
+  output. Change the algorithm so that it only uses one temporary
+  deck, \emph{min}, getting rid of \emph{temp}.
+\end{exercise}
+
+\clearpage
+\section{Mandatory assignment 1}
+
+To verify that you got the hang of this, the last exercise is to be
+handed in, as the first mandatory assignment. The deadline is
+September~21. You may work individually or in pairs. We do not allow
+larger groups, since we want to make sure that everyone takes an
+active part.
+
+Detailed instructions for submission will be posted on the course blog
+shortly. \textbf{Please make sure that you follow the
+  instructions exactly!}
+
+\begin{assignment}
+  Place cards in order.
+  \begin{description}
+  \item[Input:] A deck \emph{in}.
+  \item[Output:] A deck \emph{out}, containing all the cards from
+    \emph{in} ordered with smaller-value cards below greater-value
+    cards, i.e., no card should be on top of any card with a greater
+    value.
+  \end{description}
+\end{assignment}
+
+%% -----------------------------------------------------------
+ \subsection{Hints}\label{sec-hints}
+ 
+ There are many ways of placing items in order, and you don't have to
+ follow these hints if you find another way. But the simplest way to
+ solve this in the card deck setting is probably to use an algorithm
+ called \emph{selection sort}, which can be formulated as follows.
+
+ Use four decks in total: \emph{in}, \emph{out}, \emph{temp}, and
+ \emph{out}. The basic idea is to repeatedly find the smallest card
+ from \emph{in} and move it to out. A sketch of the algorithm is:
 %%
-\begin{lstlisting}
-scala DeckInter -trace myexample.dcod
-\end{lstlisting}
+
+\begin{enumerate}
+\item\label{firststep} While \emph{in} is not empty, repeat steps\,\ref{loop1start}--\ref{loop1end} \\
+\item\label{loop1start} While \emph{in} is not empty:
+  Look at the top card on \emph{in}. If it is smaller than the card on
+  \emph{min}, make it the new \emph{min} card, and move any
+  previous \emph{min} card to \emph{temp}. Otherwise (it is greater or
+  equal), move it to \emph{temp}. (Repeat this step until \emph{min}
+  is empty.)
+\item Move \emph{min} to \emph{out}.
+\item\label{loop1end} Move everything from \emph{temp} back to
+  \emph{in}, and go back to check the condition in step\,\ref{firststep}.
+\end{enumerate}
+
+Note that this is a \emph{double loop}, a loop within a loop:
+step\,\ref{loop1start} contains repetition, but is itself involved in
+another repetition.
+
+Also note that as stated, the algorithm ignores the fact that
+\emph{min} starts out empty. This case has to be handled too.
+
 
 \end{document}
