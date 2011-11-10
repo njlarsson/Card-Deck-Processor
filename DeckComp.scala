@@ -1,6 +1,5 @@
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.ObjectOutputStream
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.ArrayBuffer
 
@@ -38,117 +37,143 @@ object DeckComp extends App {
       case e => println(e)
       sys.exit(66)                      // EX_NOINPUT
     }
-    val out = new ObjectOutputStream(new FileOutputStream(args(0) + ".dvm"))
+    val out = new FileOutputStream(args(0) + ".dmach")
+    var instrNo = 1
 
     // Scan for labels, decks, and files
-    val labelParser = new DeckLineParser.LineProc {
-      def stop() { }
-      def label(label: String) { labels(label) = lineNo + 1 }
+    val pass1 = new DeckLineParser.LineProc {
+      def stop() { instrNo = instrNo + 1 }
+      def label(label: String) { labels(label) = instrNo }
       def makeDeck(deckName: String) {
         decks(deckName) = decks.size + 1
         deckList.append(deckName)
       }
-      def moveTop(left: String, right: String) { }
-      def moveAll(left: String, right: String) { }
-      def jump(label: String) { }
-      def jumpEmpty(deckName: String, label: String) { }
-      def jumpNotEmpty(deckName: String, label: String) { }
-      def jumpLess(left: String, right: String, label: String) { }
-      def jumpGreater(left: String, right: String, label: String) { }
-      def jumpEqual(left: String, right: String, label: String) { }
-      def output(deckName: String) { }
+      def moveTop(left: String, right: String) { instrNo = instrNo + 1 }
+      def moveAll(left: String, right: String) { instrNo = instrNo + 1 }
+      def jump(label: String) { instrNo = instrNo + 1 }
+      def jumpEmpty(deckName: String, label: String) { instrNo = instrNo + 1 }
+      def jumpNotEmpty(deckName: String, label: String) { instrNo = instrNo + 1 }
+      def jumpLess(left: String, right: String, label: String) { instrNo = instrNo + 1 }
+      def jumpGreater(left: String, right: String, label: String) { instrNo = instrNo + 1 }
+      def jumpEqual(left: String, right: String, label: String) { instrNo = instrNo + 1 }
+      def output(deckName: String) { instrNo = instrNo + 1 }
       def read(deckName: String) {
         makeDeck(deckName)
+        instrNo = instrNo + 1
       }
       def read(deckName: String, fileName: String) {
         makeDeck(deckName)
         fileList.append(fileName)
+        instrNo = instrNo + 1
       }
       def parseException(message: String) = throw new DeckCompException(message)
     }
     while (lineNo < lines.length) {
       val line = lines(lineNo).trim
       lineNo = lineNo + 1
-      DeckLineParser.parseLine(line, labelParser)
+      DeckLineParser.parseLine(line, pass1)
+    }
+    println("labels: " + labels)
+
+    if (fileList.size > 255) throw new DeckCompException("Too many files: " + fileList.size)
+    out.write(fileList.size)
+    var fileI = 0
+    while (fileI < fileList.size) {
+      writeString(out, fileList(fileI))
+      fileI = fileI + 1
+    }
+    if (deckList.size > 255) throw new DeckCompException("Too many decks: " + deckList.size)
+    out.write(deckList.size)
+    var deckI = 0
+    while (deckI < deckList.size) {
+      writeString(out, deckList(deckI))
+      deckI = deckI + 1
     }
 
-    out.writeInt(fileList.size)
-    var fileI = 0
-    while (fileI < fileList.size) writeString(out, fileList(fileI))
-    var deckI = 0
-    while (deckI < deckList.size) writeString(out, deckList(deckI))
-
-    val generator = new DeckLineParser.LineProc {
-      def stop() { out.writeInt(DeckVM.STOP) }
+    val pass2 = new DeckLineParser.LineProc {
+      def stop() { out.write(DeckVM.STOP) }
       def label(label: String) { }
       def makeDeck(deckName: String) { }
       def moveTop(left: String, right: String) {
-        out.writeInt(DeckVM.MOVETOP)
-        out.writeInt(decks(left))
-        out.writeInt(decks(right))
+        out.write(DeckVM.MOVETOP)
+        println("* op " + DeckVM.MOVETOP)
+        out.write(decks(left))
+        out.write(decks(right))
       }
       def moveAll(left: String, right: String) {
-        out.writeInt(DeckVM.MOVEALL)
-        out.writeInt(decks(left))
-        out.writeInt(decks(right))
+        out.write(DeckVM.MOVEALL)
+        println("* op " + DeckVM.MOVEALL)
+        out.write(decks(left))
+        out.write(decks(right))
       }
       def jump(label: String) {
-        out.writeInt(DeckVM.JUMP)
-        out.writeInt(labels(label))
+        out.write(DeckVM.JUMP)
+        println("* op " + DeckVM.JUMP)
+        out.write(labels(label))
       }
       def jumpEmpty(deckName: String, label: String) { 
-        out.writeInt(DeckVM.JUMP_EMPTY)
-        out.writeInt(decks(deckName))
-        out.writeInt(labels(label))
+        out.write(DeckVM.JUMP_EMPTY)
+        println("* op " + DeckVM.JUMP_EMPTY)
+        out.write(decks(deckName))
+        out.write(labels(label))
       }
       def jumpNotEmpty(deckName: String, label: String) {
-        out.writeInt(DeckVM.JUMP_NOT_EMPTY)
-        out.writeInt(decks(deckName))
-        out.writeInt(labels(label))
+        out.write(DeckVM.JUMP_NOT_EMPTY)
+        println("* op " + DeckVM.JUMP_NOT_EMPTY)
+        out.write(decks(deckName))
+        out.write(labels(label))
       }
       def jumpLess(left: String, right: String, label: String) {
-        out.writeInt(DeckVM.JUMP_LESS)
-        out.writeInt(decks(left))
-        out.writeInt(decks(right))
-        out.writeInt(labels(label))
+        out.write(DeckVM.JUMP_LESS)
+        println("* op " + DeckVM.JUMP_LESS)
+        out.write(decks(left))
+        out.write(decks(right))
+        out.write(labels(label))
       }
       def jumpGreater(left: String, right: String, label: String) {
-        out.writeInt(DeckVM.JUMP_GREATER)
-        out.writeInt(decks(left))
-        out.writeInt(decks(right))
-        out.writeInt(labels(label))
+        out.write(DeckVM.JUMP_LESS)
+        println("* op " + DeckVM.JUMP_LESS)
+        out.write(decks(right))
+        out.write(decks(left))
+        out.write(labels(label))
       }
       def jumpEqual(left: String, right: String, label: String) {
-        out.writeInt(DeckVM.JUMP_EQUAL)
-        out.writeInt(decks(left))
-        out.writeInt(decks(right))
-        out.writeInt(labels(label))
+        out.write(DeckVM.JUMP_EQUAL)
+        println("* op " + DeckVM.JUMP_EQUAL)
+        out.write(decks(left))
+        out.write(decks(right))
+        out.write(labels(label))
       }
       def output(deckName: String) {
-        out.writeInt(DeckVM.OUTPUT)
-        out.writeInt(decks(deckName))
+        out.write(DeckVM.OUTPUT)
+        println("* op " + DeckVM.OUTPUT)
+        out.write(decks(deckName))
       }
       def read(deckName: String) {
-        out.writeInt(DeckVM.READ)
-        out.writeInt(decks(deckName))
+        out.write(DeckVM.READ)
+        println("* op " + DeckVM.READ)
+        out.write(decks(deckName))
       }
       def read(deckName: String, fileName: String) {
-        out.writeInt(DeckVM.OUTPUT)
-        out.writeInt(decks(deckName))
-        out.writeInt(fileI)
+        out.write(DeckVM.READ_FILE)
+        println("* op " + DeckVM.READ_FILE)
+        out.write(decks(deckName))
+        out.write(fileI)
         fileI = fileI + 1
       }
       def parseException(message: String) = throw new DeckCompException(message)
     }
     
-    out.writeInt(lines.size)
+    if (instrNo > 255) throw new DeckCompException("Too many instructions: " + instrNo)
+    out.write(instrNo - 1)
     fileI = 1
     lineNo = 0
     while (lineNo < lines.length) {
       val line = lines(lineNo).trim
       lineNo = lineNo + 1
-      DeckLineParser.parseLine(line, generator)
+      DeckLineParser.parseLine(line, pass2)
     }
+    out.close()
   } catch {
     case e: DeckCompException => {
       println(e);
@@ -164,11 +189,15 @@ object DeckComp extends App {
     }
   }
 
-  private def writeString(out: ObjectOutputStream, s: String) {
-    out.writeInt(s.length)
+  private def writeString(out: FileOutputStream, s: String) {
+    if (s.length > 255) throw new DeckCompException("String too long: " + s)
+    out.write(s.length)
+    println(s.length)
     var i = 0
     while (i < s.length) {
-      out.writeChar(s(i))
+      if (s(i) > 255) throw new DeckCompException("Illegal character: " + s(i))
+      out.write(s(i))
+      println(s(i) + " " + s(i).toInt)
       i = i + 1
     }
   }
