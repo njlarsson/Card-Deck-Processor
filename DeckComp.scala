@@ -73,7 +73,6 @@ object DeckComp extends App {
       lineNo = lineNo + 1
       DeckLineParser.parseLine(line, pass1)
     }
-    println("labels: " + labels)
 
     if (fileList.size > 255) throw new DeckCompException("Too many files: " + fileList.size)
     out.write(fileList.size)
@@ -96,67 +95,56 @@ object DeckComp extends App {
       def makeDeck(deckName: String) { }
       def moveTop(left: String, right: String) {
         out.write(DeckVM.MOVETOP)
-        println("* op " + DeckVM.MOVETOP)
         out.write(decks(left))
         out.write(decks(right))
       }
       def moveAll(left: String, right: String) {
         out.write(DeckVM.MOVEALL)
-        println("* op " + DeckVM.MOVEALL)
         out.write(decks(left))
         out.write(decks(right))
       }
       def jump(label: String) {
         out.write(DeckVM.JUMP)
-        println("* op " + DeckVM.JUMP)
         out.write(labels(label))
       }
       def jumpEmpty(deckName: String, label: String) { 
         out.write(DeckVM.JUMP_EMPTY)
-        println("* op " + DeckVM.JUMP_EMPTY)
         out.write(decks(deckName))
         out.write(labels(label))
       }
       def jumpNotEmpty(deckName: String, label: String) {
         out.write(DeckVM.JUMP_NOT_EMPTY)
-        println("* op " + DeckVM.JUMP_NOT_EMPTY)
         out.write(decks(deckName))
         out.write(labels(label))
       }
       def jumpLess(left: String, right: String, label: String) {
         out.write(DeckVM.JUMP_LESS)
-        println("* op " + DeckVM.JUMP_LESS)
         out.write(decks(left))
         out.write(decks(right))
         out.write(labels(label))
       }
       def jumpGreater(left: String, right: String, label: String) {
         out.write(DeckVM.JUMP_LESS)
-        println("* op " + DeckVM.JUMP_LESS)
         out.write(decks(right))
         out.write(decks(left))
         out.write(labels(label))
       }
       def jumpEqual(left: String, right: String, label: String) {
         out.write(DeckVM.JUMP_EQUAL)
-        println("* op " + DeckVM.JUMP_EQUAL)
         out.write(decks(left))
         out.write(decks(right))
         out.write(labels(label))
       }
       def output(deckName: String) {
         out.write(DeckVM.OUTPUT)
-        println("* op " + DeckVM.OUTPUT)
         out.write(decks(deckName))
       }
       def read(deckName: String) {
         out.write(DeckVM.READ)
-        println("* op " + DeckVM.READ)
         out.write(decks(deckName))
       }
       def read(deckName: String, fileName: String) {
         out.write(DeckVM.READ_FILE)
-        println("* op " + DeckVM.READ_FILE)
         out.write(decks(deckName))
         out.write(fileI)
         fileI = fileI + 1
@@ -192,12 +180,10 @@ object DeckComp extends App {
   private def writeString(out: FileOutputStream, s: String) {
     if (s.length > 255) throw new DeckCompException("String too long: " + s)
     out.write(s.length)
-    println(s.length)
     var i = 0
     while (i < s.length) {
       if (s(i) > 255) throw new DeckCompException("Illegal character: " + s(i))
       out.write(s(i))
-      println(s(i) + " " + s(i).toInt)
       i = i + 1
     }
   }
