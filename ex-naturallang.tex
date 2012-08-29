@@ -19,66 +19,59 @@
 
 \title{Algorithms in Natural Language}
 \author{Jesper Larsson, IT University of Copenhagen}
-\date{2011-09-06 (version 2)}
+\date{2012-08-31}
 
 \begin{document}
 \maketitle
 
-\begin{abstract}
-  This text concerns algorithms for reordering decks of cards,
-  expressed in natural language. It is used for exercise on the course
-  \emph{IT Foundations}, fall 2011, and is part of the syllabus.
-\end{abstract}
-
 %% ===============================================
 \section{Introduction}\label{sec-intro}
 
-It is a common misconception that knowledge of programming is the same
-thing as knowledge of programming languages. Before you can write the
-code that solves a task, you must have an idea about the process that
-the code should reflect. The description of that process is what we
-call an \emph{algorithm}, and this is possible to express in plain
-English.
+When you create a program to solve a task, you start with an idea for
+a working process to solve it, which the program is to use. The
+description of that process is what we call an \emph{algorithm}. You
+can express an algorithm in some formal computer language, but also in
+plain English.
 
 This exercise is about designing algorithms for rearranging decks of
 numbered cards, and formulating them in English.
 
-To make it tangible, you should work with an actual deck of
-cards. We will use approximately 20~cards, each with a number between
-1 and 20 (but any deck of numbered cards will do). Keep the cards on
-the table in front of you with the face side up (the one with the
-number). You rearrange the cards, moving them around among a
-few decks, making all decisions based on what cards you see. When
+To make it tangible, you should work with an actual deck of cards. We
+will use approximately 20~cards, each with a number between 1 and 20
+(but any deck of numbered cards will do). Keep the cards on the table
+in front of you with the face side up (the one with the number). You
+rearrange the cards, move them around among a few decks, and base
+only on what card numbers you currently see. When
 cards are on top of each other, you can only make decisions based on
 the value of the card on top.
 
-It is recommended that you work in pairs so that you can observe each
-others card movements and discuss the algorithms. Get help from the
-teaching assistants when you need it.
+You are recommended to work in pairs, so you can observe each
+other's card movements and discuss the algorithms.
 
 %% ===============================================
 \section{Operations}\label{sec-ops}
 
-The input to each algorithm is one or more named decks of cards, the
-contents of which may be restricted in some way in the
-specification. (For instance, it may be specified that a particular
-deck only contains one card.) You can create more decks as part of the
-algorithm, and move cards among both the input decks and those you
-created yourself. The decks you create are initially empty, so what
-you create is really a place for a deck on the table, not the actual
-stack of cards. Input decks can be empty, unless they are specified
-not to be. Output consists of one or several decks.
+The input to each algorithm is one or more named decks of cards, which
+is given in the problem specification. There may be known properties
+for some input decks in the specification. For instance, it could
+state that a particular deck only contains one card.
 
-We use natural language for the algorithms, but that doesn't
-mean that we can use any operation that natural language can
-express. There is a strictly defined \emph{interface}: a set of
-available operations, as follows:
+The algorithm can use more decks than just the input decks, either to
+generate output or just to keep cards temporarily. All decks should be
+specified at the start of the algorithm. Those that are not input
+decks start out empty, so they are initially just named places for
+decks on the table. Input decks can also be empty, unless they are specified
+not to be. Output consists of the contents of one or several decks.
+
+We use natural language for the algorithms, but that doesn't mean that
+we can do anything that can be expressed in English. There is a
+strictly defined \emph{interface}: a set of available operations, as
+follows:
 %% 
 \begin{itemize}
-\item Creating a new named deck, e.g., ``Create new deck \emph{x}.''
 \item Move the top card of a deck on top of another deck, e.g., ``Move
   top card from deck \emph{x} to deck \emph{y}.'' If \emph{x} is empty
-  when this operation is reached, it means that there is an error in
+  when this instruction is reached, there is an error in
   the algorithm.
 \item Move all cards of a deck and place them on top of another deck
   without rearranging them, e.g., ``Move all cards from deck \emph{x}
@@ -94,18 +87,20 @@ available operations, as follows:
   than top card on deck \emph{y}.''
 \item Jump conditionally, based on whether a deck is empty or not. E.g.,
   ``Jump to \emph{startpoint} if deck \emph{x} is not empty.''
-\item Make a deck \emph{output} of the algorithm, e.g., ``Output deck
+\item Send the contents of a deck to the \emph{output}, e.g., ``Output deck
   $x$.''
 \item Stop. The process is finished.
 \end{itemize}
 
-You write one line for each step of an algorithm. You can use pen and
+Write one line for each step of an algorithm. You can use pen and
 paper, or a computer with a text editor or word processor. Often it is
 easier to start on paper and transfer to a computer when it gets too
-messy. Each step should be one of the operations listed above,
+messy. Each step should use one of the operations listed above,
 \emph{nothing else!} In addition to the steps, there are also labels
--- the destination points of jumps. Each label is also written on a
-line of its own, followed by a colon.
+-- the destination points of jumps. A label is on a
+line of its own, followed by colon.
+
+\clearpage
 
 %% ===============================================
 \section{Examples}\label{sec-examp}
@@ -116,13 +111,12 @@ Here is a first example of what an algorithm specification can look like:
   Split a deck of cards into two parts whose sizes are as equal as possible.
   \begin{description}
   \item[Input:] One deck of cards named \emph{in}
-  \item[Output:] Two decks of cards \emph{out1} and \emph{out2},
+  \item[Output:] Two decks of cards,
     whose numbers of cards differ by at most one.
+  \item[Decks:] \emph{in} (input), \emph{out1}, \emph{out2}.
  \item[Algorithm:]
   \item\normalfont
     \begin{tabular}{l}
-      Create new deck \emph{out1}.\\
-      Create new deck \emph{out2}.\\
       \lbl{check}\\
       Jump to \emph{end} if \emph{in} is empty.\\
       Move the top card from \emph{in} to \emph{out1}.\\
@@ -149,14 +143,16 @@ solution, but short and simple are good properties to strive for.
   \begin{description}
   \item[Input:] One deck named \emph{limit} containing a single card,
     and one deck named \emph{in} containing any number of cards.
-  \item[Output:] One deck named \emph{out}, containing all the cards
+  \item[Output:] One deck named containing all the cards
     from \emph{in} whose value is no less than the card in the
     \emph{limit} deck.
+  \item[Decks:] \emph{in} (input), \emph{out}, \emph{trash}.
+
+\clearpage
+
  \item[Algorithm:]
   \item\normalfont
     \begin{tabular}{l}
-      Create new deck \emph{out}.\\
-      Create new deck \emph{trash}.\\
       \lbl{check}\\
       Jump to \emph{end} if \emph{in} is empty.\\
       Jump to \emph{skip} if the top card of \emph{in} is smaller than
@@ -177,14 +173,13 @@ solution, but short and simple are good properties to strive for.
   Extract the smallest card from a deck.
   \begin{description}
   \item[Input:] A deck \emph{in}.
-  \item[Output:] A deck \emph{min}, containing containing only one
+  \item[Output:] A deck containing containing only one
     card from \emph{in}, which has the smallest value of any of the
     cards in \emph{in}.
- \item[Algorithm:]
+  \item[Decks:] \emph{in} (input), \emph{min}, \emph{trash}.
+  \item[Algorithm:]
   \item\normalfont
     \begin{tabular}{l}
-      Create new deck \emph{min}.\\
-      Create new deck \emph{trash}.\\
       \lbl{check}\\
       Jump to \emph{end} if \emph{in} is empty.\\
       Jump to \emph{move} if \emph{min} is empty.\\
@@ -211,17 +206,18 @@ specification didn't think of it, or because it doesn't matter what
 happens in that case. In the given algorithm, an empty input results
 in an empty output, which would seem like a reasonable response.
 
-\enlargethispage{2\baselineskip}
+%%\enlargethispage{2\baselineskip}
 
 \begin{example}\label{smallbottom}
   Place smallest cards at the bottom.
   \begin{description}
   \item[Input:] A deck \emph{in}.
-  \item[Output:] A deck \emph{out}, that contains all the cards from
+  \item[Output:] A deck containing all the cards from
     in, but with the cards with the smallest value at the
     bottom. (Note that there can be more than one card with this
     value.) The other cards can be in any order.
- \item[Algorithm:]
+  \item[Decks:] \emph{in} (input), \emph{min}, \emph{temp} \emph{out}.
+  \item[Algorithm:]
   \item\normalfont
     \begin{tabular}{l}
       Create new deck \emph{min}.\\
@@ -250,20 +246,20 @@ in an empty output, which would seem like a reasonable response.
   \end{description}
 \end{example}
 
+\clearpage
+
 %% ===============================================
 \section{Exercises}\label{sec-exer}
 
 Here follows a number of specifications without given algorithms, to let
-find your own solutions. You don't have to hand in anything for this
-exercise, but working well now will make it easier for you to solve
-the first mandatory assignment.
+find your own solutions.
 
 \begin{exercise}
   Split a deck of cards into three parts whose sizes are as equal as possible.
   \begin{description}
   \item[Input:] One deck of cards named \emph{in}
-  \item[Output:] Three decks of cards \emph{out1}, \emph{out2}, and
-    \emph{out3}, whose numbers of cards differ by at most one.
+  \item[Output:] Three decks of cards whose numbers of cards differ by
+    at most one.
  \end{description}
 \end{exercise}
 
@@ -273,9 +269,9 @@ the first mandatory assignment.
   \begin{description}
   \item[Input:] One deck \emph{limit} containing a single card, and one
     deck \emph{in} containing any number of cards.
-  \item[Output:] One deck named \emph{smaller}, containing all the
+  \item[Output:] One deck containing all the
     cards from \emph{in} whose values are less than the card in the
-    \emph{limit} deck, and one deck named \emph{greater} that contains
+    \emph{limit} deck, followed by one deck that contains
     the other cards.
   \end{description}
 \end{exercise}
@@ -291,7 +287,7 @@ the first mandatory assignment.
   Place cards in order.
   \begin{description}
   \item[Input:] A deck \emph{in}.
-  \item[Output:] A deck \emph{out}, containing all the cards from
+  \item[Output:] A deck containing all the cards from
     \emph{in} ordered with smaller-value cards below greater-value
     cards, i.e., no card should be on top of any card with a greater
     value.
