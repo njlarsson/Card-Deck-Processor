@@ -23,16 +23,11 @@
 
 \title{Deck Code}
 \author{Jesper Larsson, IT University of Copenhagen}
-\date{2011-09-08}
+\date{2012-09-07}
 
 \begin{document}
 \maketitle
 
-\begin{abstract}
-  This text contains exercise material and a mandatory assignment for
-  the course \emph{IT Foundations}, fall 2011, and is part of the
-  syllabus.
-\end{abstract}
 
 %% ===============================================
 \section{Introduction}\label{sec-intro}
@@ -49,6 +44,12 @@ lot of typing. Second, rather than ``running'' the algorithms manually
 using paper cards, there is an \emph{interpreter} that can run the
 code for you, so that you can test that it actually works. A strict
 syntax is necessary for an interpreter to work.
+
+You find the interpreter online at
+\verb$http://deck-code.appspot.com/$. It is deployed as a \emph{Google
+  App Engine} application, and you use your Google account to sign
+in. If you don't have a Google account, it is easy to sign up for one,
+just follow Google's links.
 
 The available operations are exactly the same as in the previous
 exercise, so whatever algorithm you came up with then, you can now
@@ -72,61 +73,50 @@ Everything is case sensitive. For instance, you can't write
 different labels called \lstinline!end! and \lstinline!End!.
 
 %% -----------------------------------------------------------
-\subsection{Read}\label{sec-input}
+\subsection{Deck definitions}
+
+You have to define the decks that you use in your program. This is
+most naturally done at the start. Decks can be either \emph{input}
+decks, in which case you are prompted for their contents, or they can
+be decks that start out empty.
 
 Defining input wasn't part of the informal-language algorithms, but
 they have to be specified to the interpreter, and therefore need to be
 included in the deck code.
 
-The \emph{read} operation gets input. It has one deck name argument,
-and one optional file name argument. For example, you can simply write:
+The \emph{deck} instruction defines a deck. It has one deck name
+argument, after which the word \emph{input} should follow if this is
+to be an input deck. For example, you can write:
 %%
 \begin{lstlisting}
-   read in
+   deck in input
 \end{lstlisting}
 
 This defines a deck called \emph{in}, which must not have been
-previously defined, and stops to read its contents. When you get to
+previously defined. When the program is submitted, you are prompted
+for its contents. When you get to
 this line in a running deck code program you see:
 %%
 \begin{lstlisting}
-Enter cards for in: 
+in: 
 \end{lstlisting}
 %%
-and you are expected to enter the contents of the deck bottom up, as a
+followed by an input pane, in which you are expected to enter the contents of the deck bottom up, as a
 comma-separated list of integer numbers. For instance, it can look
 like this:
 %%
 \begin{lstlisting}
-Enter cards for in: 3, 12, 7, 1
+in: 3, 12, 7, 1
 \end{lstlisting}
 %%
-After typing the number list, you hit return, and the program
-continues, the deck \emph{in} now containing four cards, 3~on the
-bottom and 1~on the top.
+When you have entered the initial content for all input decks, you
+click \emph{Run}, and the program starts executing.
 
-It gets tedious to have to type input every time, especially if you
-are entering the same cards over and over for testing
-purposes. Therefore, you may choose to read from a file instead, by
-adding a comma and a filename, for example like this:
+You create an empty deck with the \emph{deck} instruction in the same
+way, but omit the word \emph{input}. Like this, for instance:
 %%
 \begin{lstlisting}
-   read in, a.deck
-\end{lstlisting}
-%%
-This assumes that there is a plain text file \lstinline!a.deck! in the
-current working directory, containing a comma-separated list of
-integers. (You can create a file like this using a text editor, just
-like when you write deck code.)
-
-%% -----------------------------------------------------------
-\subsection{New}\label{sec-new}
-
-You create a new, empty, deck with the \emph{new} operator, which has
-a single deck name argument. Like this, for instance:
-%%
-\begin{lstlisting}
-   new temp
+   deck temp
 \end{lstlisting}
 
 %% -----------------------------------------------------------
@@ -228,9 +218,9 @@ algorithms in the previous exercise text (\emph{Algorithms in Natural
     whose numbers of cards differ by at most one.
   \end{description}
 \begin{lstlisting}
-   read in
-   new out1
-   new out2
+   deck in input
+   deck out1
+   deck out2
 check:
    jump if empty in, end
    movetop in, out1
@@ -244,10 +234,6 @@ end:
 \end{lstlisting}
 \end{example}
 
-Examples\,\ref{extractge} and~\ref{extractsmallest} both read \emph{in} from a file called
-\emph{extractfrom.deck}, so you have to make a file like that in the
-current directory (or change the programs).
-
 \begin{example}\label{extractge}
   Extract all cards greater than or equal to a given value.
   \begin{description}
@@ -258,10 +244,10 @@ current directory (or change the programs).
     \emph{limit} deck.
  \end{description}
 \begin{lstlisting}
-   read in, extractfrom.deck
-   read limit
-   new out
-   new trash
+   deck in input
+   deck limit input
+   deck out
+   deck trash
 check:
    jump if empty in, end
    jump if less in, limit, skip
@@ -285,9 +271,9 @@ stop
     cards in \emph{in}.
  \end{description}
 \begin{lstlisting}
-   read in, extractfrom.deck
-   new min
-   new trash
+   deck in input
+   deck min
+   deck trash
 check:
    jump if empty in, end
    jump if empty min, move
@@ -315,10 +301,10 @@ end:
     value.) The other cards can be in any order.
  \end{description}
 \begin{lstlisting}
-   read in, b.deck
-   new min
-   new temp
-   new out
+   deck in input
+   deck min
+   deck temp
+   deck out
 check:
    jump if empty in, end
    jump if empty min, move
@@ -375,20 +361,7 @@ code, and actually verify that they work.
   deck, \emph{min}, getting rid of \emph{temp}.
 \end{exercise}
 
-\clearpage
-\section{Mandatory assignment 1}
-
-To verify that you got the hang of this, the last exercise is to be
-handed in, as the first mandatory assignment. The deadline is
-September~21. You may work individually or in pairs. We do not allow
-larger groups, since we want to make sure that everyone takes an
-active part.
-
-Detailed instructions for submission will be posted on the course blog
-shortly. \textbf{Please make sure that you follow the
-  instructions exactly!}
-
-\begin{assignment}
+\begin{exercise}\label{sort}
   Place cards in order.
   \begin{description}
   \item[Input:] A deck \emph{in}.
@@ -397,10 +370,10 @@ shortly. \textbf{Please make sure that you follow the
     cards, i.e., no card should be on top of any card with a greater
     value.
   \end{description}
-\end{assignment}
+\end{exercise}
 
 %% -----------------------------------------------------------
- \subsection{Hints}\label{sec-hints}
+ \subsection{Hints for exercise \ref{sort}}\label{sec-hints}
  
  There are many ways of placing items in order, and you don't have to
  follow these hints if you find another way. But the simplest way to

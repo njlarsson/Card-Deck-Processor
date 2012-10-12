@@ -1,0 +1,403 @@
+\documentclass[a4paper,twoside]{tufte-handout}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+%% \usepackage{graphics}
+\usepackage[USenglish]{babel}
+
+\frenchspacing
+
+\newtheorem{exercise}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{assignment}{Assignment}
+
+\renewcommand{\theexercise}{\Alph{exercise}}
+
+\newcommand\lbl[1]{\hspace{-1em}\emph{#1:}}
+
+%%\lstset{basicstyle=\ttfamily,backgroundcolor=\color{white},frame=single,rulecolor=\color{gray!20},framesep=10pt,linewidth=12cm}
+\lstset{basicstyle=\normalfont\ttfamily\small,frame=single,rulecolor=\color{gray!40}}
+
+\title{Card Deck Algorithms in Javascript}
+\author{Jesper Larsson, IT University of Copenhagen}
+\date{2012-10-09 (version 2.1)}
+
+\begin{document}
+\maketitle
+
+%% ===============================================
+\section{Getting Started}\label{sec-start}
+
+In this exercise you will try creating objects and calling their
+methods, and practice expressing yourself in code. To avoid having to learn
+too much new stuff, we will use objects and algorithms that you have
+seen before, namely the \emph{card decks} from the first
+exercise/assignment.
+
+Start with the following \textsc{html} (which you can download from
+\verb'http://itu.dk/courses/BITF/E2012/use-deck-template.html' if you
+don't want to type it in):
+%%
+\begin{lstlisting}
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Card deck code</title>
+
+<script type="text/javascript"
+        src="http://itu.dk/courses/BITF/E2012/deck.js">
+</script>
+
+</head>
+
+<body>
+
+<script type="text/javascript">
+// Your own code goes here.
+</script>
+
+</body>
+</html>
+\end{lstlisting}
+%%
+
+As you can see, the first \emph{script} element, the one inside the
+\emph{head}, has no content. (The end tag, \verb'</script>' follows
+immediately after the start tag.) Instead, it has a \emph{src}
+attribute in the start tag, which points out where to get the code. In
+this way, you can include code from the outside in a \textsc{html}
+document. The effect is the same as if the contents of the file
+\emph{deck.js} had been the content of the \emph{script} element.
+
+If you'd like, you can download \emph{deck.js} using the full address
+in the \emph{src} attribute, and see what it looks like. But don't
+worry if you can't figure out what it all means, you are just going to
+use it to create deck objects to use in own code.
+
+The other \emph{script} element, in the \emph{body}, doesn't have any
+real code either, just a comment that you should exchange for your own
+Javascript code.
+
+Before we go through all the complete deck object interface, let's start with a trivial example program that just creates
+a Deck object, reads some cards for it from the user, and then writes
+it to the output. This would look something like the following.
+%%
+\begin{lstlisting}
+   var d = deck("myDeck");
+   d.read();
+   alert(d);
+\end{lstlisting}
+%%
+This corresponds to the following deck code:
+%%
+\begin{lstlisting}
+   deck myDeck input
+   output myDeck
+   stop
+\end{lstlisting}
+
+Replace the comment in the second \emph{script} element in your
+\textsc{html} file with this code, and then open it in Firefox to see
+that you get the right result.
+
+Also, try looking at the code with Firebug. Firebug seems a little bit
+buggy, and not completely trustworthy, but it can still give you
+valuable help, because if something goes wrong in a Javascript
+program, the browser typically doesn't show anything at all. In the
+\emph{Console} tab of Firebug, you often see error messages if
+something goes wrong, and you can also try setting breakpoints and
+stepping through the code.
+
+%% ===============================================
+\section{Interface}\label{sec-intf}
+
+The deck interface is defined by the following methods, which
+correspond to how decks can be used in deck code.
+
+The available methods are:
+%%
+\begin{lstlisting}[frame=none]
+   parse(inputString)
+   moveTopTo(otherDeck)
+   moveAllTo(otherDeck)
+   compareTop(otherDeck)
+   isEmpty()
+\end{lstlisting}
+%%
+Let's go through how to use them by looking at the corresponding
+deck code.
+
+%% -----------------------------------------------------------
+\subsection{Create and Read}\label{sec-input}
+
+You create a deck object by calling the \emph{deck} function. It takes
+one parameter: the name of the deck. So, for instance:
+%%
+\begin{lstlisting}
+  var deckId = deck("deckName");
+\end{lstlisting}
+%%
+This defines a deck with one name to the programmer (\emph{deckId}),
+and another to the user (\emph{deckName}). There is no particular
+reason not to use the same name for both, but you should be aware that
+they have no direct connection.
+
+That created an empty deck. To prompt the user to input a deck, you
+first create the deck and then call the \emph{read} method. For instance:
+%%
+\begin{lstlisting}
+  var inDeck = new Deck("in");
+  inDeck.read();
+\end{lstlisting}
+%%
+You can \emph{not} have a variable in Javascript with the name
+\emph{in}, because \emph{in} is a keyword in Javascript! So,
+%%
+\verb'var in = new Deck("in")' would fail.
+
+%% -----------------------------------------------------------
+\subsection{Movement}\label{sec-move}
+
+The method \emph{moveTopTo} corresponds to \emph{movetop} in deck
+code, and \emph{moveAllTo} corresponds to \emph{moveall}. For instance:
+%%
+\begin{lstlisting}
+   inDeck.moveTopTo(tempDeck);
+   tempDeck.moveAllTo(outDeck);
+\end{lstlisting}
+%%
+moves the top card from \emph{inDeck} to \emph{tempDeck}, and then puts all
+the cards from \emph{tempDeck} on top of \emph{outDeck}.
+
+%% -----------------------------------------------------------
+\subsection{Conditions}\label{sec-conds}
+
+To move around in Javascript code, you use constructs like \emph{if} and
+\emph{while}. Not \emph{jumps} like in deck code. But the conditions
+used for \emph{if} and \emph{while} are similar to the conditions
+available for \emph{jump} in deck code.
+
+The method \emph{compareTop} compares the top cards of two decks. If \emph{a} and \emph{b}
+are decks, ``a.compareTop(b)'', returns:
+%%
+\begin{itemize}
+\item A value less than zero if the top card on \emph{a} is less than
+  the top card on \emph{b}.
+\item Zero if the top card on \emph{a} is equal to
+  the top card on \emph{b}.
+\item A value greater than zero if the top card on \emph{a} is greater than
+  the top card on \emph{b}.
+\end{itemize}
+
+This is a typical use:
+%%
+\begin{lstlisting}
+  if (inDeck.compareTop(tempDeck) < 0) {
+    // Do this if top card on inDeck is < top card on tempDeck.
+  }
+\end{lstlisting}
+
+Also, you can test if a deck is empty with \emph{isEmpty}, like this
+for instance:
+%%
+\begin{lstlisting}
+  while (!inDeck.isEmpty()) {
+    // Repeat this for as long as in is not empty.
+  }
+\end{lstlisting}
+
+%% -----------------------------------------------------------
+\subsection{Output}\label{sec-output}
+
+Deck actually also has a \emph{toString} method that is used to
+produce a string showing the deck contents. But this is called
+implicitly if a deck is used as a string, so you can just do:
+%%
+\begin{lstlisting}
+  alert(deckId);
+\end{lstlisting}
+%%
+Or you can output the deck into the web page, something like this:
+%%
+\begin{lstlisting}
+  document.write("<p>" + deckId + "</p>");
+\end{lstlisting}
+
+\clearpage
+
+\section{Examples}\label{sec-examp}
+
+The examples in this section correspond to those of the deck code exercise.
+
+\begin{example}
+  Split a deck of cards into two parts whose sizes are as equal as possible.
+  \begin{description}
+  \item[Input:] One deck of cards named \emph{in}
+  \item[Output:] Two decks of cards \emph{out1} and \emph{out2},
+    whose numbers of cards differ by at most one.
+  \end{description}
+\begin{lstlisting}
+var inDeck = deck("in");
+inDeck.read();
+var o1 = deck("out1");
+var o2 = deck("out2");
+while (!inDeck.isEmpty()) {
+    inDeck.moveTopTo(o1);
+    if (!inDeck.isEmpty()) {
+        inDeck.moveTopTo(o2);
+    }
+}
+document.write("<p>" + o1 + "</p>");
+document.write("<p>" + o2 + "</p>");
+\end{lstlisting}
+\end{example}
+
+\begin{example}\label{extractge}
+  Extract all cards greater than or equal to a given value.
+  \begin{description}
+  \item[Input:] One deck named \emph{limit} containing a single card,
+    and one deck named \emph{in} containing any number of cards.
+  \item[Output:] One deck named \emph{out}, containing all the cards
+    from \emph{in} whose value is no less than the card in the
+    \emph{limit} deck.
+ \end{description}
+\begin{lstlisting}
+var inDeck = deck("in");
+inDeck.read();
+var lim = deck("limit");
+lim.read();
+var out = deck("out");
+var trash = deck("trash");
+while (!inDeck.isEmpty()) {
+    if (inDeck.compareTop(lim) >= 0) {
+        inDeck.moveTopTo(out);
+    } else {
+        inDeck.moveTopTo(trash);
+    }
+}
+document.write("<p>" + out + "</p>");
+\end{lstlisting}
+\end{example}
+
+\clearpage
+
+\begin{example}\label{extractsmallest}
+  Extract the smallest card from a deck.
+  \begin{description}
+  \item[Input:] A deck \emph{in}.
+  \item[Output:] A deck \emph{min}, containing containing only one
+    card from \emph{in}, which has the smallest value of any of the
+    cards in \emph{in}.
+ \end{description}
+\begin{lstlisting}
+var inDeck = deck("in");
+inDeck.read();
+var min = deck("min");
+var trash = deck("trash");
+while (!inDeck.isEmpty()) {
+    if (min.isEmpty()) {
+        inDeck.moveTopTo(min);
+    } else if (inDeck.compareTop(min) < 0) {
+        min.moveTopTo(trash);
+        inDeck.moveTopTo(min);
+    } else {
+        inDeck.moveTopTo(trash);
+    }
+}
+document.write("<p>" + min + "</p>");
+\end{lstlisting}
+\end{example}
+
+\begin{example}\label{smallbottom}
+  Place smallest cards at the bottom.
+  \begin{description}
+  \item[Input:] A deck \emph{in}.
+  \item[Output:] A deck \emph{out}, that contains all the cards from
+    in, but with the cards with the smallest value at the
+    bottom. (Note that there can be more than one card with this
+    value.) The other cards can be in any order.
+ \end{description}
+\begin{lstlisting}
+var inDeck = deck("in");
+inDeck.read();
+var min = deck("min");
+var temp = deck("temp");
+var out = deck("out");
+while (!inDeck.isEmpty()) {
+    if (min.isEmpty() || inDeck.compareTop(min) == 0) {
+        inDeck.moveTopTo(min);
+    } else if (inDeck.compareTop(min) < 0) {
+        min.moveAllTo(temp);
+        inDeck.moveTopTo(min);
+    } else {
+        inDeck.moveTopTo(temp);
+    }
+}
+min.moveAllTo(out);
+temp.moveAllTo(out);
+document.write("<p>" + out + "</p>");
+\end{lstlisting}
+\end{example}
+
+\clearpage
+
+
+%% ===============================================
+\section{Exercises}\label{sec-editrun}
+
+The following exercises are the same as in previous exercises, but
+this time, you code them in Javascript.
+
+\begin{exercise}
+  Split a deck of cards into three parts whose sizes are as equal as possible.
+  \begin{description}
+  \item[Input:] One deck of cards named \emph{in}
+  \item[Output:] Three decks of cards \emph{out1}, \emph{out2}, and
+    \emph{out3}, whose numbers of cards differ by at most one.
+ \end{description}
+\end{exercise}
+
+\begin{exercise}
+  Split a deck of cards into two decks. One with cards smaller than a
+  given value, and one with cards greater than or equal to that value.
+  \begin{description}
+  \item[Input:] One deck \emph{limit} containing a single card, and one
+    deck \emph{in} containing any number of cards.
+  \item[Output:] One deck named \emph{smaller}, containing all the
+    cards from \emph{in} whose values are less than the card in the
+    \emph{limit} deck, and one deck named \emph{greater} that contains
+    the other cards.
+  \end{description}
+\end{exercise}
+
+\begin{exercise}
+  Example\,\ref{smallbottom} above uses two temporary decks \emph{min}
+  and \emph{temp}, which are not part of either input or
+  output. Change the algorithm so that it only uses one temporary
+  deck, \emph{min}, getting rid of \emph{temp}.
+\end{exercise}
+
+It's not surprising if you found the previous exercises at least as
+difficult to code as the corresponding deck code. But the following,
+which is more complex and involves a loop inside a loop, should be
+much clearer in Javascript than the spaghetti jumping you had to do in deck
+code.
+
+\begin{exercise}
+  Place cards in order.
+  \begin{description}
+  \item[Input:] A deck \emph{in}.
+  \item[Output:] A deck \emph{out}, containing all the cards from
+    \emph{in} ordered with smaller-value cards below greater-value
+    cards, i.e., no card should be on top of any card with a greater
+    value.
+  \end{description}
+\end{exercise}
+
+The same hint applies as in assignment\,1, and you should be able to
+use the same algorithm
+
+
+\end{document}
