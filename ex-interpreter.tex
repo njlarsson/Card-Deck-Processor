@@ -23,7 +23,7 @@
 
 \title{Deck Code}
 \author{Jesper Larsson, IT University of Copenhagen}
-\date{2012-09-07}
+\date{2013-09-05}
 
 \begin{document}
 \maketitle
@@ -381,7 +381,7 @@ code, and actually verify that they work.
  called \emph{selection sort}, which can be formulated as follows.
 
  Use four decks in total: \emph{in}, \emph{out}, \emph{temp}, and
- \emph{out}. The basic idea is to repeatedly find the smallest card
+ \emph{min}. The basic idea is to repeatedly find the smallest card
  from \emph{in} and move it to out. A sketch of the algorithm is:
 %%
 
@@ -391,7 +391,7 @@ code, and actually verify that they work.
   Look at the top card on \emph{in}. If it is smaller than the card on
   \emph{min}, make it the new \emph{min} card, and move any
   previous \emph{min} card to \emph{temp}. Otherwise (it is greater or
-  equal), move it to \emph{temp}. (Repeat this step until \emph{min}
+  equal), move it to \emph{temp}. (Repeat this step until \emph{in}
   is empty.)
 \item Move \emph{min} to \emph{out}.
 \item\label{loop1end} Move everything from \emph{temp} back to
